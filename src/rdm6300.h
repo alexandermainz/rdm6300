@@ -40,6 +40,7 @@ class Rdm6300
 		bool update(void);
 		uint32_t get_tag_id(void);
 		bool is_tag_near(void);
+		const char * get_s_tag_id(void);
 	private:
 #ifdef RDM6300_HARDWARE_SERIAL
 		HardwareSerial *_hardware_serial = NULL;
@@ -51,6 +52,7 @@ class Rdm6300
 		uint32_t _tag_id = 0;
 		uint32_t _last_tag_id = 0;
 		uint32_t _last_read_ms = 0;
+		char _s_tag_id[11];
 };
 
 #endif

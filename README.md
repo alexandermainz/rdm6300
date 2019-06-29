@@ -26,6 +26,7 @@ A simple RFID to serial reciver example can be found at:
 * ```void begin(int rxPin, uint8_t uart_nr=1)``` - Initialize the object to use the given GPIO pin as RX from the RDM6300.
 * ```bool update()``` - Updates the internal values by reading from the RDM6300, returns true on tag detection, must be called repeatedly!
 * ```uint32_t get_tag_id()``` - Returns the last tag id read by ```update```- can be called only once after ```update```.
+* ```const char * get_s_tag_id()``` - Returns the last tag id read by ```update``` as a 10-digit hex string - can be called only once after ```update```.
 * ```bool is_tag_near()``` -  Returns whether a tag is currently held near the antenna- can be called many times after ```update```.
 ## Enjoy!
 A.E.TECH

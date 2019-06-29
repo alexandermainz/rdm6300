@@ -17,6 +17,8 @@ void Rdm6300::begin(Stream *stream)
 
 void Rdm6300::begin(int rx_pin, uint8_t uart_nr)
 {
+	memset(_s_tag_id, 0, 11);
+
 	/* init serial port to rdm6300 baud, without TX, and 20ms read timeout */
 	end();
 #if defined(ARDUINO_ARCH_ESP32)
@@ -82,6 +84,8 @@ bool Rdm6300::update(void)
 	/* add null and parse tag_id */
 	buff[11] = 0;
 	tag_id = strtol(buff + 3, NULL, 16);
+	/* copy the 10 bytes payload to _s_tag_id */
+	strncpy(_s_tag_id, buff + 1, 10);
 	/* add null and parse version (needs to be xored with checksum) */
 	buff[3] = 0;
 	checksum ^= strtol(buff + 1, NULL, 16);
@@ -98,8 +102,10 @@ bool Rdm6300::update(void)
 		_last_read_ms = 0;
 	}
 	/* if the old tag is still here set tag_id to zero */
-	if (is_tag_near())
+	if (is_tag_near()) {
 		tag_id = 0;
+		_s_tag_id[0] = '\0';
+	}
 	_last_read_ms = millis();
 
 	_tag_id = tag_id;
@@ -113,7 +119,14 @@ bool Rdm6300::is_tag_near(void)
 
 uint32_t Rdm6300::get_tag_id(void)
 {
+	// return the tag_id and set it to zero so subsequent calls of that function will return 0
 	uint32_t tag_id = _tag_id;
 	_tag_id = 0;
 	return tag_id;
+}
+
+const char * Rdm6300::get_s_tag_id(void)
+{
+	// just return the current set alphanumeric "Tag ID" of the last read tag
+	return (const char*)_s_tag_id;
 }
